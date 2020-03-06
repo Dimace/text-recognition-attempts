@@ -1,12 +1,5 @@
-import numpy as np
 import re
-import nltk
-from sklearn.datasets import load_files
-import os.path
 import pickle
-import shutil
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from bs4 import BeautifulSoup
 import requests
 
