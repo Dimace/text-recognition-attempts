@@ -2,6 +2,7 @@ import re
 import pickle
 from bs4 import BeautifulSoup
 import requests
+from nltk.stem import WordNetLemmatizer
 
 categories = ['IT', 'economics', 'history', 'mathematics']
 
