@@ -1,6 +1,7 @@
 import re
 import pickle
 from bs4 import BeautifulSoup
+from sklearn.datasets import load_files
 import requests
 from nltk.stem import WordNetLemmatizer
 
@@ -15,7 +16,14 @@ with open('tfidfconverter_trained', 'rb') as tfidfconverter_trained:
 def classify_sites(url_list):
     if(isinstance(url_list, list)):
         parsed_texts = []
-        return parsed_texts
+        raw_texts = fetch_texts_by_url(url_list)
+        processed_texts = process_texts(raw_texts)
+        samples = dict(zip(url_list, processed_texts))
+        transformed_texts = tfidfconverter_trained.transform(processed_texts).toarray()
+
+        prediction_categories = map(lambda index: categories[index], model.predict(transformed_texts))
+        result = dict(zip(url_list, prediction_categories))
+        return result
     else:
         return []
 
@@ -91,14 +99,11 @@ def test_module():
         'https://en.wikipedia.org/wiki/Source_code',
         'https://en.wikipedia.org/wiki/Algorithm'
     ]
-    raw_texts = fetch_texts_by_url(test_set)
-    processed_texts = process_texts(raw_texts)
-    samples = dict(zip(test_set, processed_texts))
-    transformed_texts = tfidfconverter_trained.transform(processed_texts).toarray()
 
-    prediction_categories = map(lambda index: categories[index], model.predict(transformed_texts))
-    print('HACHU PITZU')
-    print(dict(zip(test_set, prediction_categories)))
+    result = classify_sites(test_set)
+
+    print('TESTING CLASSIFICATION MODULE...')
+    print(result)
     return None
 
 if __name__ == "__main__": 
